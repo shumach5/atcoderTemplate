@@ -23,7 +23,7 @@ namespace AtCoder.Abcdef
             string[] inputStrArray = Console.ReadLine().Split(' ');
 
             //Input int array
-            int[] inputLongArray = Console.ReadLine().Split(' ').Select(i => int.Parse(i)).ToArray();
+            int[] inputArray = Console.ReadLine().Split(' ').Select(i => int.Parse(i)).ToArray();
 
             //Write Code
 
