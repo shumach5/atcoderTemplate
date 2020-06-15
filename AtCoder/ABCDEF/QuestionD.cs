@@ -25,7 +25,6 @@ namespace AtCoder.Abcdef
             //Input int array
             int[] inputArray = Console.ReadLine().Split(' ').Select(i => int.Parse(i)).ToArray();
 
-            //Write Code
 
             Console.Out.Flush();
         }

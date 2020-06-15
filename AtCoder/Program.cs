@@ -12,10 +12,11 @@ namespace AtCoder
         static void Run(string[] args) 
         {
             QuestionA.Main(args);
-            QuestionB.Main(args);
-            QuestionD.Main(args);
-            QuestionE.Main(args);
-            QuestionF.Main(args);
+            //QuestionB.Main(args);
+            //QuestionC.Main(args);
+            //QuestionD.Main(args);
+            //QuestionE.Main(args);
+            //QuestionF.Main(args);
         }
     }
 }
