@@ -16,8 +16,11 @@ namespace AtCoder.Abcdef
             //Input string
             string s = Console.ReadLine();
 
-            //Input integer
-            long n = long.Parse(Console.ReadLine());
+            //Input int
+            int n = int.Parse(Console.ReadLine());
+
+            //Input long
+            long l = long.Parse(Console.ReadLine());
 
             //Input string array
             string[] inputStrArray = Console.ReadLine().Split(' ');
@@ -25,6 +28,8 @@ namespace AtCoder.Abcdef
             //Input int array
             int[] inputArray = Console.ReadLine().Split(' ').Select(i => int.Parse(i)).ToArray();
 
+            //Input long array
+            long[] inputLongArray = Console.ReadLine().Split(' ').Select(i => long.Parse(i)).ToArray();
 
             Console.Out.Flush();
         }
