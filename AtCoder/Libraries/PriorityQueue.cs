@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AtCoder.Libraries
 {
-	class PriorityQueue<T> : IEnumerable<T> where T : IComparable
+	public class PriorityQueue<T> : IEnumerable<T> where T : IComparable
 	{
 		private List<T> _list;
 		public bool IsMaxPriorityQueue { get; }
