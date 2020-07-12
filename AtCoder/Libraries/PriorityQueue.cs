@@ -22,7 +22,7 @@ namespace AtCoder.Libraries
 			}
 		}
 
-		void Add(T item)
+		public void Add(T item)
 		{
 			if (item is null)
 			{
