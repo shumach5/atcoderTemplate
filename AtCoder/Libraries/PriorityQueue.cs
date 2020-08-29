@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace AtCoder.Libraries
@@ -11,21 +12,26 @@ namespace AtCoder.Libraries
         private IComparer _comparer;
         public int Count => _list.Count;
 
-        public PriorityQueue(IComparer comparer) : this(null, comparer) { }
-
-        public PriorityQueue(IEnumerable<T> items, IComparer comparer)
+        public PriorityQueue() 
         {
-            if (comparer is null)
-            {
-                throw new ArgumentNullException(nameof(comparer));
-            }
-            _comparer = comparer;       
-            
             _list = new List<T>();
-            if (items != null && items.Count() > 0) _list.AddRange(items);
-            foreach (var item in items)
+            _comparer = new Comparer(CultureInfo.CurrentCulture);
+        }
+
+        public PriorityQueue(IComparer comparer) : this() 
+        {
+            if (comparer != null) _comparer = comparer; 
+        }
+
+        public PriorityQueue(IEnumerable<T> items, IComparer comparer) : this(comparer)
+        {
+            if (items != null && items.Count() > 0)
             {
-                Add(item);
+                _list.AddRange(items);
+                foreach (var item in items)
+                {
+                    Add(item);
+                }
             }
         }
 
