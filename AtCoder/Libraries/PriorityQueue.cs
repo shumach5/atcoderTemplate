@@ -5,17 +5,16 @@ using System.Linq;
 
 namespace AtCoder.Libraries
 {
-	public class PriorityQueue<T> : IEnumerable<T> where T : IComparable
+	public class PriorityQueue<T> : IEnumerable<T>
 	{
 		private List<T> _list;
-		public bool IsMaxPriorityQueue { get; }
-
+		private IComparer _comparer;
 		public int Count => _list.Count;
 
-		public PriorityQueue(IEnumerable<T> items, bool isMaxPriorityQueue = false)
+		public PriorityQueue(IEnumerable<T> items, IComparer comparer)
 		{
+			if (comparer != null) _comparer = comparer;
 			_list = new List<T>(items.Count() * 2);
-			IsMaxPriorityQueue = isMaxPriorityQueue;
 			foreach (var item in items)
 			{
 				Add(item);
@@ -42,7 +41,7 @@ namespace AtCoder.Libraries
 				var parentIndex = GetParentIndex(currIndex);
 
 				// parent > curr
-				if (Compare(_list[parentIndex], _list[currIndex]) > 0)
+				if (_comparer.Compare(_list[parentIndex], _list[currIndex]) > 0)
 				{
 					(_list[parentIndex], _list[currIndex]) = (_list[currIndex], _list[parentIndex]);
 					currIndex = parentIndex;
@@ -73,12 +72,12 @@ namespace AtCoder.Libraries
 				var rightIndex = GetRightIndex(currIndex);
 
 				int smallestIndex = currIndex;
-				if (leftIndex < _list.Count && Compare(_list[smallestIndex], _list[leftIndex]) > 0)
+				if (leftIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[leftIndex]) > 0)
 				{
 					smallestIndex = leftIndex;
 				}
 
-				if (rightIndex < _list.Count && Compare(_list[smallestIndex], _list[rightIndex]) > 0)
+				if (rightIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[rightIndex]) > 0)
 				{
 					smallestIndex = rightIndex;
 				}
@@ -105,11 +104,6 @@ namespace AtCoder.Libraries
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
-
-		int Compare(T objA, T objB)
-		{
-			return IsMaxPriorityQueue ? objB.CompareTo(objA) : objA.CompareTo(objB);
 		}
 	}
 }
