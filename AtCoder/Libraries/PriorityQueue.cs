@@ -5,105 +5,113 @@ using System.Linq;
 
 namespace AtCoder.Libraries
 {
-	public class PriorityQueue<T> : IEnumerable<T>
-	{
-		private List<T> _list;
-		private IComparer _comparer;
-		public int Count => _list.Count;
+    public class PriorityQueue<T> : IEnumerable<T>
+    {
+        private List<T> _list;
+        private IComparer _comparer;
+        public int Count => _list.Count;
 
-		public PriorityQueue(IEnumerable<T> items, IComparer comparer)
-		{
-			if (comparer != null) _comparer = comparer;
-			_list = new List<T>(items.Count() * 2);
-			foreach (var item in items)
-			{
-				Add(item);
-			}
-		}
+        public PriorityQueue(IComparer comparer) : this(null, comparer) { }
 
-		public void Add(T item)
-		{
-			if (item is null)
-			{
-				throw new ArgumentNullException();
-			}
-			if (_list.Count == 0)
-			{
-				_list.Add(item);
-				return;
-			}
+        public PriorityQueue(IEnumerable<T> items, IComparer comparer)
+        {
+            if (comparer is null)
+            {
+                throw new ArgumentNullException(nameof(comparer));
+            }
+            _comparer = comparer;       
+            
+            _list = new List<T>();
+            if (items != null && items.Count() > 0) _list.AddRange(items);
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+        }
 
-			_list.Add(item);
+        public void Add(T item)
+        {
+            if (item is null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (_list.Count == 0)
+            {
+                _list.Add(item);
+                return;
+            }
 
-			var currIndex = _list.Count - 1;
-			while (currIndex > 0)
-			{
-				var parentIndex = GetParentIndex(currIndex);
+            _list.Add(item);
 
-				// parent > curr
-				if (_comparer.Compare(_list[parentIndex], _list[currIndex]) > 0)
-				{
-					(_list[parentIndex], _list[currIndex]) = (_list[currIndex], _list[parentIndex]);
-					currIndex = parentIndex;
-				}
-				else
-				{
-					break;
-				}
-			}
-		}
+            var currIndex = _list.Count - 1;
+            while (currIndex > 0)
+            {
+                var parentIndex = GetParentIndex(currIndex);
 
-		public T Peek() => _list.FirstOrDefault();
+                // parent > curr
+                if (_comparer.Compare(_list[parentIndex], _list[currIndex]) > 0)
+                {
+                    (_list[parentIndex], _list[currIndex]) = (_list[currIndex], _list[parentIndex]);
+                    currIndex = parentIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
 
-		public T Pop()
-		{
-			if (_list.Count == 0) return default(T);
+        public T Peek() => _list.FirstOrDefault();
 
-			var ans = _list[0];
-			_list[0] = _list.Last();
-			_list.RemoveAt(_list.Count - 1);
+        public T Pop()
+        {
+            if (_list.Count == 0) return default(T);
 
-			if (_list.Count == 0) return ans;
+            var ans = _list[0];
+            _list[0] = _list.Last();
+            _list.RemoveAt(_list.Count - 1);
 
-			var currIndex = 0;
-			while (true)
-			{
-				var leftIndex = GetLeftIndex(currIndex);
-				var rightIndex = GetRightIndex(currIndex);
+            if (_list.Count == 0) return ans;
 
-				int smallestIndex = currIndex;
-				if (leftIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[leftIndex]) > 0)
-				{
-					smallestIndex = leftIndex;
-				}
+            var currIndex = 0;
+            while (true)
+            {
+                var leftIndex = GetLeftIndex(currIndex);
+                var rightIndex = GetRightIndex(currIndex);
 
-				if (rightIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[rightIndex]) > 0)
-				{
-					smallestIndex = rightIndex;
-				}
+                int smallestIndex = currIndex;
+                if (leftIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[leftIndex]) > 0)
+                {
+                    smallestIndex = leftIndex;
+                }
 
-				if (smallestIndex != currIndex)
-				{
-					(_list[currIndex], _list[smallestIndex]) = (_list[smallestIndex], _list[currIndex]);
-					currIndex = smallestIndex;
-				}
-				else
-				{
-					break;
-				}
-			}
+                if (rightIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[rightIndex]) > 0)
+                {
+                    smallestIndex = rightIndex;
+                }
 
-			return ans;
-		}
+                if (smallestIndex != currIndex)
+                {
+                    (_list[currIndex], _list[smallestIndex]) = (_list[smallestIndex], _list[currIndex]);
+                    currIndex = smallestIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-		int GetParentIndex(int index) => (index - 1) / 2;
-		int GetLeftIndex(int index) => 2 * (index + 1) - 1;
-		int GetRightIndex(int index) => 2 * (index + 1);
+            return ans;
+        }
 
-		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-	}
+        int GetParentIndex(int index) => (index - 1) / 2;
+        int GetLeftIndex(int index) => 2 * (index + 1) - 1;
+        int GetRightIndex(int index) => 2 * (index + 1);
+
+        public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }
