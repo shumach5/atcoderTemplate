@@ -6,16 +6,17 @@ using System.Linq;
 
 namespace AtCoder.Libraries
 {
-    public class PriorityQueue<T> : IEnumerable<T>
+    public class PriorityQueue<T> : IEnumerable<T> where T : IComparable
     {
         private List<T> _list;
         private IComparer _comparer;
+        private bool _ascending = true;
+
         public int Count => _list.Count;
 
         public PriorityQueue() 
         {
             _list = new List<T>();
-            _comparer = new Comparer(CultureInfo.CurrentCulture);
         }
 
         public PriorityQueue(IComparer comparer) : this() 
@@ -23,19 +24,19 @@ namespace AtCoder.Libraries
             if (comparer != null) _comparer = comparer; 
         }
 
-        public PriorityQueue(IEnumerable<T> items, IComparer comparer) : this(comparer)
+        public PriorityQueue(IEnumerable<T> items, IComparer comparer = null) : this(comparer)
         {
             if (items != null && items.Count() > 0)
             {
                 _list.AddRange(items);
                 foreach (var item in items)
                 {
-                    Add(item);
+                    Push(item);
                 }
             }
         }
 
-        public void Add(T item)
+        public void Push(T item)
         {
             if (item is null)
             {
@@ -55,7 +56,7 @@ namespace AtCoder.Libraries
                 var parentIndex = GetParentIndex(currIndex);
 
                 // parent > curr
-                if (_comparer.Compare(_list[parentIndex], _list[currIndex]) > 0)
+                if (Compare(_list[parentIndex], _list[currIndex]) > 0)
                 {
                     (_list[parentIndex], _list[currIndex]) = (_list[currIndex], _list[parentIndex]);
                     currIndex = parentIndex;
@@ -86,12 +87,12 @@ namespace AtCoder.Libraries
                 var rightIndex = GetRightIndex(currIndex);
 
                 int smallestIndex = currIndex;
-                if (leftIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[leftIndex]) > 0)
+                if (leftIndex < _list.Count && Compare(_list[smallestIndex], _list[leftIndex]) > 0)
                 {
                     smallestIndex = leftIndex;
                 }
 
-                if (rightIndex < _list.Count && _comparer.Compare(_list[smallestIndex], _list[rightIndex]) > 0)
+                if (rightIndex < _list.Count && Compare(_list[smallestIndex], _list[rightIndex]) > 0)
                 {
                     smallestIndex = rightIndex;
                 }
@@ -108,6 +109,12 @@ namespace AtCoder.Libraries
             }
 
             return ans;
+        }
+
+        int Compare(T item0, T item1) 
+        {
+            if (_comparer != null) return _comparer.Compare(item0, item1);
+            return _ascending ? item0.CompareTo(item1) : -item0.CompareTo(item1);
         }
 
         int GetParentIndex(int index) => (index - 1) / 2;
