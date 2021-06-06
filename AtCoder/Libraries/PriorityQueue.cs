@@ -1,49 +1,55 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace AtCoder.Libraries
 {
-    public class PriorityQueue<T> : IEnumerable<T> where T : IComparable
+    public class PriorityQueue<T> : IEnumerable<T>
     {
         private List<T> _list;
         private IComparer _comparer;
-        private bool _ascending = true;
+        private bool _ascending;
 
         public int Count => _list.Count;
 
-        public PriorityQueue() 
+        PriorityQueue()
         {
             _list = new List<T>();
         }
 
-        public PriorityQueue(bool ascending = true) : this()
+        public PriorityQueue(bool ascending) : this()
         {
+            if (!CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
             _ascending = ascending;
         }
 
-        public PriorityQueue(IComparer comparer) : this() 
+        public PriorityQueue(IComparer comparer) : this()
         {
-            if (comparer != null) _comparer = comparer; 
+            if (comparer != null) _comparer = comparer;
+            else if (comparer == null && !CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
         }
 
-        public PriorityQueue(IEnumerable<T> items, IComparer comparer = null) : this(comparer)
+        public PriorityQueue(IEnumerable<T> items, bool ascending) : this(ascending) => AddRangeInit(items);
+
+        public PriorityQueue(IEnumerable<T> items, IComparer comparer) : this(comparer) => AddRangeInit(items);
+
+        bool CheckIfGenericTypeContainsIComparable() => typeof(T).GetInterfaces().Contains(typeof(IComparable));
+
+        private void AddRangeInit(IEnumerable<T> items)
         {
-            if (items != null && items.Count() > 0)
+            if (items == null) throw new ArgumentNullException("Initial Collection is null");
+
+            _list.AddRange(items);
+            foreach (var item in items)
             {
-                _list.AddRange(items);
-                foreach (var item in items)
-                {
-                    Push(item);
-                }
+                Push(item);
             }
         }
 
         public void Push(T item)
         {
-            if (item is null)
+            if (item == null)
             {
                 throw new ArgumentNullException();
             }
@@ -116,10 +122,10 @@ namespace AtCoder.Libraries
             return ans;
         }
 
-        int Compare(T item0, T item1) 
+        int Compare(T item0, T item1)
         {
             if (_comparer != null) return _comparer.Compare(item0, item1);
-            return _ascending ? item0.CompareTo(item1) : -item0.CompareTo(item1);
+            return _ascending ? ((IComparable)item0).CompareTo(item1) : -((IComparable)item0).CompareTo(item1);
         }
 
         int GetParentIndex(int index) => (index - 1) / 2;
