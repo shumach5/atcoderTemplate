@@ -19,6 +19,11 @@ namespace AtCoder.Libraries
             _list = new List<T>();
         }
 
+        public PriorityQueue(bool ascending = true) : this()
+        {
+            _ascending = ascending;
+        }
+
         public PriorityQueue(IComparer comparer) : this() 
         {
             if (comparer != null) _comparer = comparer; 
