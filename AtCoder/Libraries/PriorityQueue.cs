@@ -30,6 +30,8 @@ namespace AtCoder.Libraries
             else if (comparer == null && !CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
         }
 
+        public PriorityQueue(IEnumerable<T> items) : this(items, true) => AddRangeInit(items);
+
         public PriorityQueue(IEnumerable<T> items, bool ascending) : this(ascending) => AddRangeInit(items);
 
         public PriorityQueue(IEnumerable<T> items, IComparer comparer) : this(comparer) => AddRangeInit(items);
@@ -40,7 +42,6 @@ namespace AtCoder.Libraries
         {
             if (items == null) throw new ArgumentNullException("Initial Collection is null");
 
-            _list.AddRange(items);
             foreach (var item in items)
             {
                 Push(item);
