@@ -7,27 +7,24 @@ namespace AtCoder.Libraries
 {
     public class PriorityQueue<T> : IEnumerable<T>
     {
-        private List<T> _list;
+        private List<T> _list = new List<T>();
+        private bool _ascending = true;
         private IComparer _comparer;
-        private bool _ascending;
 
         public int Count => _list.Count;
 
-        PriorityQueue()
-        {
-            _list = new List<T>();
-        }
-
-        public PriorityQueue(bool ascending) : this()
+        public PriorityQueue()
         {
             if (!CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
-            _ascending = ascending;
         }
+        bool CheckIfGenericTypeContainsIComparable() => typeof(T).GetInterfaces().Contains(typeof(IComparable));
 
-        public PriorityQueue(IComparer comparer) : this()
+        public PriorityQueue(bool ascending) : this() => _ascending = ascending;
+
+        public PriorityQueue(IComparer comparer)
         {
-            if (comparer != null) _comparer = comparer;
-            else if (comparer == null && !CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
+            if (comparer == null) throw new ArgumentNullException("comparer is null");
+            _comparer = comparer;
         }
 
         public PriorityQueue(IEnumerable<T> items) : this(items, true){}
@@ -36,16 +33,11 @@ namespace AtCoder.Libraries
 
         public PriorityQueue(IEnumerable<T> items, IComparer comparer) : this(comparer) => AddRangeInit(items);
 
-        bool CheckIfGenericTypeContainsIComparable() => typeof(T).GetInterfaces().Contains(typeof(IComparable));
-
         private void AddRangeInit(IEnumerable<T> items)
         {
             if (items == null) throw new ArgumentNullException("Initial Collection is null");
 
-            foreach (var item in items)
-            {
-                Push(item);
-            }
+            foreach (var item in items) Push(item);
         }
 
         public void Push(T item)
