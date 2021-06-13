@@ -30,7 +30,7 @@ namespace AtCoder.Libraries
             else if (comparer == null && !CheckIfGenericTypeContainsIComparable()) throw new ArgumentException("Please Pass the comparer for this type");
         }
 
-        public PriorityQueue(IEnumerable<T> items) : this(items, true) => AddRangeInit(items);
+        public PriorityQueue(IEnumerable<T> items) : this(items, true){}
 
         public PriorityQueue(IEnumerable<T> items, bool ascending) : this(ascending) => AddRangeInit(items);
 
